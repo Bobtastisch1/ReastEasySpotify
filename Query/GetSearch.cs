@@ -23,6 +23,7 @@ namespace ReastEasySpotify.Query
                 HttpClient client = new();
                 string URL = $"search/?{q}&type={typ}";
 
+              
                 HttpResponseMessage response = await client.GetAsync(URL);
 
                 if (response.IsSuccessStatusCode)
