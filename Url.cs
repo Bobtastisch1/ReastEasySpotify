@@ -11,10 +11,9 @@ namespace ReastEasySpotify
     {
         private String baseUrl = "https://api.spotify.com/v1/";
 
-
         public string GetUrl(string param)
         {
-            var url = baseUrl + param;
+            string url = baseUrl + param;
 
             return url;
         }

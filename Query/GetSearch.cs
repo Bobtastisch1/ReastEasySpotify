@@ -1,4 +1,5 @@
-﻿using RestEase;
+﻿using Newtonsoft.Json.Linq;
+using RestEase;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,20 +12,34 @@ namespace ReastEasySpotify.Query
     internal class Query
     {
 
-        public async Task<string> GetSearchAsync(string q, string typ, bool fehler, string fehlermeldung)
+        public async Task<string> GetSearchAsync(string q, string typ, bool fehler = false, string fehlermeldung = "")
         {
             const string Methode = "GetSearch";
-
-            fehler = false;
-            fehlermeldung = "";
 
             try
             {
                 HttpClient client = new();
-                string URL = $"search/?{q}&type={typ}";
+                string values = $"search/?{q}&type={typ}";
+                Url baseUrl = new();
+                string url = baseUrl.GetUrl(values);
 
-              
-                HttpResponseMessage response = await client.GetAsync(URL);
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
+
+                GetTokenQuery GetToken = new();
+
+                string token = GetToken.GetToken();
+
+                if (string.IsNullOrWhiteSpace(token)) 
+                {
+                    fehler = true;
+                    fehlermeldung = Methode + ": Fehler bei getToken";
+
+                    return "";
+                };
+
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+                HttpResponseMessage response = await client.GetAsync(url);
 
                 if (response.IsSuccessStatusCode)
                 {

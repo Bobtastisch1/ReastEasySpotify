@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,7 +12,7 @@ namespace ReastEasySpotify.Query
 
         public string GetToken()
         {
-            string tokenTask = GetTokenAsync();
+            Task<string> tokenTask = GetTokenAsync();
 
             return tokenTask.Result;
         }
@@ -20,14 +21,14 @@ namespace ReastEasySpotify.Query
         {
             string tokenUrl = "https://accounts.spotify.com/authorize";
 
-            string tokenRequestContent = GetTokenRequestContent();
+            FormUrlEncodedContent tokenRequestContent = GetTokenRequestContent();
 
             HttpClient httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             HttpResponseMessage httpReponse = null;
             try
             {
-                httpReponse = await httpClient.PostAsync(tokenURL, tokenRequestContent).ConfigureAwait(false);
+                httpReponse = await httpClient.PostAsync(tokenUrl, tokenRequestContent).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
