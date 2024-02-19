@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using ReastEasySpotify.Model;
 using RestEase;
 using System;
 using System.Collections.Generic;
@@ -12,34 +13,33 @@ namespace ReastEasySpotify.Query
     internal class Query
     {
 
-        public async Task<string> GetSearchAsync(string q, string typ, bool fehler = false, string fehlermeldung = "")
+        public async Search GetSearch(string q, string typ, bool fehler = false, string fehlermeldung = "")
         {
             const string Methode = "GetSearch";
+            string values = $"search/?{q}&type={typ}";
+            Url baseUrl = new();
+            string url = baseUrl.GetUrl(values);
+
+            ISpotifyAPI client = RestClient.For<ISpotifyAPI>(url);
+
+            GetTokenQuery GetToken = new();
+            string token = GetToken.SetAuthorization();
+
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                fehler = true;
+                fehlermeldung = Methode + ": Fehler bei getToken";
+
+                return "";
+            };
+
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
             try
-            {
-                HttpClient client = new();
-                string values = $"search/?{q}&type={typ}";
-                Url baseUrl = new();
-                string url = baseUrl.GetUrl(values);
+            {                                           
 
-                client.DefaultRequestHeaders.Add("Accept", "application/json");
-
-                GetTokenQuery GetToken = new();
-
-                string token = GetToken.GetToken();
-
-                if (string.IsNullOrWhiteSpace(token)) 
-                {
-                    fehler = true;
-                    fehlermeldung = Methode + ": Fehler bei getToken";
-
-                    return "";
-                };
-
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-
-                HttpResponseMessage response = await client.GetAsync(url);
+                var response = await client.GetSearch(url);
 
                 if (response.IsSuccessStatusCode)
                 {

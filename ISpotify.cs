@@ -14,7 +14,7 @@ namespace ReastEasySpotify
         string APIKey { get; set; }
 
         [Get("/search")]
-        Task<Response> GetSearch();
+        Task<Response> GetSearch([Path] string q);
 
         [Get("/playlist/{playlist_id}")]
         Task<Response> GetPlaylistById([Path] string playlist_id);

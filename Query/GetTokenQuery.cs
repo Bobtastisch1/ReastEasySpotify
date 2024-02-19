@@ -10,7 +10,7 @@ namespace ReastEasySpotify.Query
     internal class GetTokenQuery
     {
 
-        public string GetToken()
+        public string SetAuthorization()
         {
             Task<string> tokenTask = GetTokenAsync();
 
@@ -25,7 +25,7 @@ namespace ReastEasySpotify.Query
 
             HttpClient httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            HttpResponseMessage httpReponse = null;
+            HttpResponseMessage httpReponse;
             try
             {
                 httpReponse = await httpClient.PostAsync(tokenUrl, tokenRequestContent).ConfigureAwait(false);
@@ -34,7 +34,7 @@ namespace ReastEasySpotify.Query
             {
                 throw new Exception("Fehler bei PostAsync: " + ex.Message);
             }
-            string result = "";
+            string result;
             try
             {
                 result = await httpReponse.Content.ReadAsStringAsync().ConfigureAwait(false);
