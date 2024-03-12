@@ -5,7 +5,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ReastEasySpotify.Query
+namespace ReastEasySpotify.Controllers
 {
     internal class GetTokenQuery
     {
@@ -19,12 +19,12 @@ namespace ReastEasySpotify.Query
 
         public async Task<String> GetTokenAsync()
         {
-            string tokenUrl = "https://accounts.spotify.com/authorize";
+            string tokenUrl = "https://accounts.spotify.com/api/token";
 
             FormUrlEncodedContent tokenRequestContent = GetTokenRequestContent();
 
             HttpClient httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+          
             HttpResponseMessage httpReponse;
             try
             {
@@ -34,6 +34,12 @@ namespace ReastEasySpotify.Query
             {
                 throw new Exception("Fehler bei PostAsync: " + ex.Message);
             }
+
+            if(httpReponse.IsSuccessStatusCode != true)
+            {
+                return "";
+            }
+
             string result;
             try
             {
@@ -60,7 +66,7 @@ namespace ReastEasySpotify.Query
             Dictionary<string, string> keyValues = new Dictionary<string, string>();
             keyValues["grant_type"] = "client_credentials";
             keyValues["client_id"] = TokenSecret.GetToken_Client();
-            keyValues["scope"] = "playlist-modify-public playlist-read-private playlist-modify-private";
+            //keyValues["scope"] = "playlist-modify-public playlist-read-private playlist-modify-private";
             keyValues["client_secret"] = TokenSecret.GetToken_Secret();
 
             FormUrlEncodedContent tokenRequestContent = new FormUrlEncodedContent(keyValues);

@@ -1,22 +1,28 @@
 ﻿using System.Net;
-using Query;
+using ReastEasySpotify;
+using ReastEasySpotify.Controllers;
+using ReastEasySpotify.Models;
 
 namespace ReastEasySpotify
 {
     internal class Program
     {
-        static async void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
-            Query query = new();
+;
 
-            var test = await query.getSearch();
+            GetSearch getSearch = new();
 
-           
-           //var Response = await GetSearch
-           //SetAuth
-           //GetSearchAsync
+            SearchDTO c = await getSearch.GetSearchs("Masse x Gewicht", "playlist");
+      
+            
+            Console.WriteLine(c.playlists);
+
+            //var Response = await GetSearch
+            //SetAuth
+            //GetSearchAsync
 
         }
+
     }
 }
