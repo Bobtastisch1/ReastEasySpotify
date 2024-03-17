@@ -18,5 +18,7 @@ namespace ReastEasySpotify
             return url;
         }
 
+        public string GetBaseUrl() {  return baseUrl; }
+
     }
 }

@@ -2,6 +2,7 @@
 using ReastEasySpotify;
 using ReastEasySpotify.Controllers;
 using ReastEasySpotify.Models;
+using static ReastEasySpotify.Models.Search;
 
 namespace ReastEasySpotify
 {
@@ -15,12 +16,7 @@ namespace ReastEasySpotify
 
             SearchDTO c = await getSearch.GetSearchs("Masse x Gewicht", "playlist");
       
-            
-            Console.WriteLine(c.playlists);
-
-            //var Response = await GetSearch
-            //SetAuth
-            //GetSearchAsync
+            Console.WriteLine(c.Playlists.href);
 
         }
 

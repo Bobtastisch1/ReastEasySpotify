@@ -17,9 +17,9 @@ namespace ReastEasySpotify
         Task<Response<object>> GetSearchAsync([Query("q")] string q,
                                           [Query("type")] string type);
 
-
-        //  [Get("/playlist/{playlist_id}")]
-        //'Task<Response> GetPlaylistById([Path] string playlist_id);
+        
+         [Get("/playlist/{playlist_id}")]
+         Task<Response<object>> GetPlaylistsByIdAsync([Path] string playlist_id);
 
         //  [Get("/playlist/{playlist_id}/Tracks")]
         //Task<Response> GetPlaylistTracks([Path] string playlist_id);

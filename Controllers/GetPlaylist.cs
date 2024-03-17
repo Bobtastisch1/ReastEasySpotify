@@ -1,19 +1,17 @@
-﻿using Newtonsoft.Json.Linq;
-using ReastEasySpotify.Models;
-using RestEase;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using static ReastEasySpotify.Models.Search;
+using ReastEasySpotify.Models;
+using RestEase;
 
 namespace ReastEasySpotify.Controllers
 {
-    internal class GetSearch
+    internal class GetPlaylist
     {
-        public async Task<SearchDTO> GetSearchs(string q, string type)
+
+        public async Task<Playlist> GetPlaylists(string playlist_id)
         {
             Url baseUrl = new();
             string url = baseUrl.GetBaseUrl();
@@ -33,25 +31,28 @@ namespace ReastEasySpotify.Controllers
 
             try
             {
-                Response<object> response = await client.GetSearchAsync(q, type);
+                Response<object> response = await client.GetPlaylistsByIdAsync(playlist_id);
 
                 if (response.ResponseMessage.IsSuccessStatusCode)
                 {
-                    SearchDTO searchResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<SearchDTO>(response.StringContent);
+                    Playlist playlistResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<Playlist>(response.StringContent);
                     // Parse and return search result
-                    return searchResponse;
+                    Playlist playlist = new Playlist();
+
+                    return playlist;
+
                 }
                 else
                 {
-                    // Handle error or return null
+
                     return null;
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                // Handle exception or return null
                 return null;
             }
+        
         }
     }
 }
