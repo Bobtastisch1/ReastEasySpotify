@@ -5,14 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using ReastEasySpotify.Models;
 using RestEase;
-using static ReastEasySpotify.Models.Playlist;
+using static ReastEasySpotify.Models.PlaylistItem;
 
 namespace ReastEasySpotify.Controllers
 {
-    internal class GetPlaylist
+    internal class GetPlaylistItem
     {
-
-        public async Task<PlaylistDTO> GetPlaylists(string playlist_id)
+        public async Task<PlaylistItemDTO> GetPlaylistsItems(string playlist_id, int offset)
         {
             Url baseUrl = new();
             string url = baseUrl.GetBaseUrl();
@@ -32,14 +31,14 @@ namespace ReastEasySpotify.Controllers
 
             try
             {
-                 Response<object> response = await client.GetPlaylistsByIdAsync(playlist_id);
+                Response<object> response = await client.GetPlaylistItemsAsync(playlist_id, offset);
 
                 if (response.ResponseMessage.IsSuccessStatusCode)
                 {
-                    PlaylistDTO playlistResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<PlaylistDTO>(response.StringContent);
-                    // Parse and return search result                  
+                    PlaylistItemDTO playlistItemResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<PlaylistItemDTO>(response.StringContent);
+                    // Parse and return search result
 
-                    return playlistResponse;
+                    return playlistItemResponse;
 
                 }
                 else
