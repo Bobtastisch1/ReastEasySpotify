@@ -13,6 +13,9 @@ namespace ReastEasySpotify
     {
         public static async Task Main(string[] args)
         {
+            Program program = new Program();
+
+
             GetSearch getSearch = new();
 
             SearchDTO searchDTO = await getSearch.GetSearchs("Masse x Gewicht", "playlist");
@@ -20,15 +23,41 @@ namespace ReastEasySpotify
             GetPlaylist getPlaylist = new();
 
             PlaylistDTO playlistDTO = await getPlaylist.GetPlaylists(searchDTO.Playlists.items.First().id);
+        
 
-           
-
-            Program program = new Program();
             Task<List<PlaylistItemDTO>> playlistItems = program.GetAllTracksInPlaylist(playlistDTO.id);
+
 
             program.WriteSearchDTOToFile(playlistItems.Result, "PlaylistItems.json");
             program.WriteSearchDTOToFile(searchDTO, "Seach_Playlist.json");
             program.WriteSearchDTOToFile(playlistDTO, "Playlist.json");
+            
+            program.ReadSearchDTOFromFile("PlaylistItems.json");
+        }
+
+        public List<PlaylistItemDTO> ReadSearchDTOFromFile(string fileName)
+        {
+            string json = File.ReadAllText(fileName);
+            List<PlaylistItemDTO> playlistItems = JsonConvert.DeserializeObject<List<PlaylistItemDTO>>(json);
+            Program program = new Program();
+            program.GetSongNames(playlistItems);
+
+            return playlistItems;
+        }
+
+        public void GetSongNames(List<PlaylistItemDTO> playlistItems)
+        {
+            foreach (PlaylistItemDTO playlistItem in playlistItems)
+            {
+                foreach (Items item in playlistItem.items)
+                {
+                    string songName = item.track.name;
+                    string href = item.track.external_Urls.spotify;
+                    string artistName = item.track.artists[0].name;
+                    Console.WriteLine(songName + " - " + artistName + " - " + href);
+                }
+            }
+
         }
 
         public void WriteSearchDTOToFile(object searchDTO, string fileName)
