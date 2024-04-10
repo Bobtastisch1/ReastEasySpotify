@@ -6,6 +6,7 @@ using ReastEasySpotify.Models;
 using static ReastEasySpotify.Models.Search;
 using static ReastEasySpotify.Models.Playlist;
 using static ReastEasySpotify.Models.PlaylistItem;
+using ReastEasySpotify.Database;
 
 namespace ReastEasySpotify
 {
@@ -16,23 +17,29 @@ namespace ReastEasySpotify
             Program program = new Program();
 
 
-            GetSearch getSearch = new();
+            ServiceDB db = new ServiceDB();
 
-            SearchDTO searchDTO = await getSearch.GetSearchs("Masse x Gewicht", "playlist");
+            //db.ServiceDataBase();
 
-            GetPlaylist getPlaylist = new();
+            //GetSearch getSearch = new();
 
-            PlaylistDTO playlistDTO = await getPlaylist.GetPlaylists(searchDTO.Playlists.items.First().id);
-        
+            //SearchDTO searchDTO = await getSearch.GetSearchs("Masse x Gewicht", "playlist");
 
-            Task<List<PlaylistItemDTO>> playlistItems = program.GetAllTracksInPlaylist(playlistDTO.id);
+            //GetPlaylist getPlaylist = new();
+
+            //PlaylistDTO playlistDTO = await getPlaylist.GetPlaylists(searchDTO.Playlists.items.First().id);
 
 
-            program.WriteSearchDTOToFile(playlistItems.Result, "PlaylistItems.json");
-            program.WriteSearchDTOToFile(searchDTO, "Seach_Playlist.json");
-            program.WriteSearchDTOToFile(playlistDTO, "Playlist.json");
-            
-            program.ReadSearchDTOFromFile("PlaylistItems.json");
+            //Task<List<PlaylistItemDTO>> playlistItems = program.GetAllTracksInPlaylist(playlistDTO.id);
+
+
+            //program.WriteSearchDTOToFile(playlistItems.Result, "PlaylistItems.json");
+            //program.WriteSearchDTOToFile(searchDTO, "Seach_Playlist.json");
+            //program.WriteSearchDTOToFile(playlistDTO, "Playlist.json");
+
+            List<PlaylistItemDTO> playlistItemDB = program.ReadSearchDTOFromFile("PlaylistItems.json");
+
+            db.ServiceDataBase(playlistItemDB);
         }
 
         public List<PlaylistItemDTO> ReadSearchDTOFromFile(string fileName)

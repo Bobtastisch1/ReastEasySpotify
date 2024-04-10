@@ -5,6 +5,8 @@
 
 Info
 TokenSecret.cs
+Migrations
+DBSecrets.cs
 
 # User-specific files
 *.rsuser
