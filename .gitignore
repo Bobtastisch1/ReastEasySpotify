@@ -7,6 +7,8 @@ Info
 TokenSecret.cs
 Migrations
 DBSecrets.cs
+MongoSecret.cs
+SQL
 
 # User-specific files
 *.rsuser

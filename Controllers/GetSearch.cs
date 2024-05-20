@@ -1,19 +1,11 @@
-﻿using Newtonsoft.Json.Linq;
-using ReastEasySpotify.Models;
+﻿using ReastEasySpotify.Models;
 using RestEase;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using static ReastEasySpotify.Models.Search;
 
 namespace ReastEasySpotify.Controllers
 {
     internal class GetSearch
     {
-        public async Task<SearchDTO> GetSearchs(string q, string type)
+        public async Task<Search.SearchDTO> GetSearchs(string q, string type)
         {
             Url baseUrl = new();
             string url = baseUrl.GetBaseUrl();
@@ -37,7 +29,7 @@ namespace ReastEasySpotify.Controllers
 
                 if (response.ResponseMessage.IsSuccessStatusCode)
                 {
-                    SearchDTO searchResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<SearchDTO>(response.StringContent);
+                    Search.SearchDTO searchResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<Search.SearchDTO>(response.StringContent);
                     // Parse and return search result
                     return searchResponse;
                 }

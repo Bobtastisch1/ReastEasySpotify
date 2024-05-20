@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using ReastEasySpotify.Models;
 using RestEase;
-using static ReastEasySpotify.Models.PlaylistItem;
 
 namespace ReastEasySpotify.Controllers
 {

@@ -1,12 +1,7 @@
-﻿using System.Net;
-using Newtonsoft.Json;
-using ReastEasySpotify;
+﻿using Newtonsoft.Json;
 using ReastEasySpotify.Controllers;
 using ReastEasySpotify.Models;
-using static ReastEasySpotify.Models.Search;
-using static ReastEasySpotify.Models.Playlist;
-using static ReastEasySpotify.Models.PlaylistItem;
-using ReastEasySpotify.Database;
+
 
 namespace ReastEasySpotify
 {
@@ -17,17 +12,20 @@ namespace ReastEasySpotify
             Program program = new Program();
 
 
-            ServiceDB db = new ServiceDB();
 
-            //db.ServiceDataBase();
+            GetSearch getSearch = new();
 
-            //GetSearch getSearch = new();
+            Search.SearchDTO searchDTO = await getSearch.GetSearchs("Masse x Gewicht", "playlist");
 
-            //SearchDTO searchDTO = await getSearch.GetSearchs("Masse x Gewicht", "playlist");
+            GetPlaylist getPlaylist = new();
 
-            //GetPlaylist getPlaylist = new();
+            Playlist.PlaylistDTO playlistDTO = await getPlaylist.GetPlaylists(searchDTO.Playlists.items.First().id);
 
-            //PlaylistDTO playlistDTO = await getPlaylist.GetPlaylists(searchDTO.Playlists.items.First().id);
+
+            Database.Mongo.Controllers.Playlist MongoPlaylist = new ();
+
+            await MongoPlaylist.SetPlaylist(playlistDTO);
+
 
 
             //Task<List<PlaylistItemDTO>> playlistItems = program.GetAllTracksInPlaylist(playlistDTO.id);
@@ -37,9 +35,12 @@ namespace ReastEasySpotify
             //program.WriteSearchDTOToFile(searchDTO, "Seach_Playlist.json");
             //program.WriteSearchDTOToFile(playlistDTO, "Playlist.json");
 
-            List<PlaylistItemDTO> playlistItemDB = program.ReadSearchDTOFromFile("PlaylistItems.json");
+            //List<PlaylistItemDTO> playlistItemDB = program.ReadSearchDTOFromFile("PlaylistItems.json");
 
-            db.ServiceDataBase(playlistItemDB);
+
+            //ServiceDB db = new ServiceDB();
+
+            // db.ServiceDataBase(playlistItemDB);
         }
 
         public List<PlaylistItemDTO> ReadSearchDTOFromFile(string fileName)
@@ -56,7 +57,8 @@ namespace ReastEasySpotify
         {
             foreach (PlaylistItemDTO playlistItem in playlistItems)
             {
-                foreach (Items item in playlistItem.items)
+
+                foreach (Playlist.Items item in playlistItem.items)
                 {
                     string songName = item.track.name;
                     string href = item.track.external_Urls.spotify;
