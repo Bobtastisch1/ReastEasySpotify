@@ -8,6 +8,7 @@ using ReastEasySpotify.Database.Mongo.Model;
 using static ReastEasySpotify.Models.Playlist;
 using Amazon.Runtime.Internal.Endpoints.StandardLibrary;
 using static ReastEasySpotify.Models.Search;
+using MongoDB.Bson;
 
 namespace ReastEasySpotify.Database.Mongo.Controllers
 {
@@ -167,17 +168,15 @@ namespace ReastEasySpotify.Database.Mongo.Controllers
                 uri = playlistDTO.uri
             };
 
+            var filter = Builders<PlaylistItemsDTO>.Filter.Eq(p => p.id, playlistItemsDTO.id);
+            var existingPlaylist = await collection.Find(filter).FirstOrDefaultAsync();
 
-            await collection.InsertOneAsync(playlistItemsDTO);
+            if (existingPlaylist != null)
+            {
+                return;
+            }
 
-            //IAsyncCursor<PlaylistItemsDTO> results = await collection.FindAsync(_ => true);
-
-            //foreach (PlaylistItemsDTO item in results.ToList())
-            //{
-            //    Console.WriteLine(item);
-            //}
-
+            await collection.InsertOneAsync(playlistItemsDTO);                
         }
-
     }
 }
