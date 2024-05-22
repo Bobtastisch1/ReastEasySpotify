@@ -14,6 +14,32 @@ namespace ReastEasySpotify.Database.Mongo.Controllers
 {
     public class Playlist
     {
+        public async Task SetPlaylists(List<Models.Playlist.PlaylistDTO> playlistDTOs)
+        {
+            MongoSecret mongoSecret = new();
+
+            MongoClient client = new(mongoSecret.ConnectionString());
+            IMongoDatabase mongoDb = client.GetDatabase(mongoSecret.GetDatabaseName());
+
+            IMongoCollection<PlaylistItemsDTO> collection = mongoDb.GetCollection<PlaylistItemsDTO>("playlistItems");
+
+            List<PlaylistItemsDTO> playlistItemsDTO = ConvertListModell(playlistDTOs);
+
+            foreach (PlaylistItemsDTO playlistItem in playlistItemsDTO)
+            {
+
+                var filter = Builders<PlaylistItemsDTO>.Filter.Eq(p => p.id, playlistItem.id);
+                var existingPlaylist = await collection.Find(filter).FirstOrDefaultAsync();
+
+                if (existingPlaylist != null)
+                {
+                    return;
+                }
+
+                await collection.InsertOneAsync(playlistItem);
+
+            }
+        }
 
         public async Task SetPlaylist(Models.Playlist.PlaylistDTO playlistDTO)
         {
@@ -24,7 +50,32 @@ namespace ReastEasySpotify.Database.Mongo.Controllers
                    
             IMongoCollection<PlaylistItemsDTO> collection = mongoDb.GetCollection<PlaylistItemsDTO>("playlistItems");
 
+            PlaylistItemsDTO playlistItemsDTO = ConvertModell(playlistDTO);
 
+            var filter = Builders<PlaylistItemsDTO>.Filter.Eq(p => p.id, playlistItemsDTO.id);
+            var existingPlaylist = await collection.Find(filter).FirstOrDefaultAsync();
+
+            if (existingPlaylist != null)
+            {
+                return;
+            }
+
+            await collection.InsertOneAsync(playlistItemsDTO);                
+        }
+
+        private List<PlaylistItemsDTO> ConvertListModell(List<PlaylistDTO> playlistDTOs)
+        {
+            List<PlaylistItemsDTO> playlistDTO = new List<PlaylistItemsDTO>();
+           
+            foreach (PlaylistDTO playlist in playlistDTOs)
+            {
+                playlistDTO.Add(ConvertModell(playlist));
+            }
+            
+            return playlistDTO;
+        }
+        private PlaylistItemsDTO ConvertModell(PlaylistDTO playlistDTO)
+        {
             PlaylistItemsDTO playlistItemsDTO = new PlaylistItemsDTO
             {
                 collaborative = playlistDTO.collaborative,
@@ -33,10 +84,10 @@ namespace ReastEasySpotify.Database.Mongo.Controllers
                 {
                     spotify = playlistDTO.external_urls.spotify
                 },
-                followers = new Model.Followers 
+                followers = new Model.Followers
                 {
-                   href = playlistDTO.followers.href,
-                   total = playlistDTO.followers.total
+                    href = playlistDTO.followers.href,
+                    total = playlistDTO.followers.total
                 },
                 href = playlistDTO.href,
                 id = playlistDTO.id,
@@ -168,15 +219,7 @@ namespace ReastEasySpotify.Database.Mongo.Controllers
                 uri = playlistDTO.uri
             };
 
-            var filter = Builders<PlaylistItemsDTO>.Filter.Eq(p => p.id, playlistItemsDTO.id);
-            var existingPlaylist = await collection.Find(filter).FirstOrDefaultAsync();
-
-            if (existingPlaylist != null)
-            {
-                return;
-            }
-
-            await collection.InsertOneAsync(playlistItemsDTO);                
+            return playlistItemsDTO;
         }
     }
-}
+} 

@@ -21,17 +21,16 @@ namespace ReastEasySpotify
 
             Playlist.PlaylistDTO playlistDTO = await getPlaylist.GetPlaylists(searchDTO.Playlists.items.First().id);
 
-
             Database.Mongo.Controllers.Playlist MongoPlaylist = new ();
 
             await MongoPlaylist.SetPlaylist(playlistDTO);
 
+            Task<List<PlaylistItemDTO>> playlistItems = program.GetAllTracksInPlaylist(playlistDTO.id);
+
+           // await MongoPlaylist.SetPlaylists(playlistItems);
 
 
-
-
-
-            //Task<List<PlaylistItemDTO>> playlistItems = program.GetAllTracksInPlaylist(playlistDTO.id);
+             
 
 
             //program.WriteSearchDTOToFile(playlistItems.Result, "PlaylistItems.json");
