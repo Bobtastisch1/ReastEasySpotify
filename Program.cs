@@ -27,7 +27,7 @@ namespace ReastEasySpotify
 
             Task<List<PlaylistItemDTO>> playlistItems = program.GetAllTracksInPlaylist(playlistDTO.id);
 
-           // await MongoPlaylist.SetPlaylists(playlistItems);
+            await MongoPlaylist.SetPlaylistItems(playlistItems);
 
 
              

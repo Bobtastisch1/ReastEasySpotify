@@ -14,32 +14,7 @@ namespace ReastEasySpotify.Database.Mongo.Controllers
 {
     public class Playlist
     {
-        public async Task SetPlaylists(List<Models.Playlist.PlaylistDTO> playlistDTOs)
-        {
-            MongoSecret mongoSecret = new();
 
-            MongoClient client = new(mongoSecret.ConnectionString());
-            IMongoDatabase mongoDb = client.GetDatabase(mongoSecret.GetDatabaseName());
-
-            IMongoCollection<PlaylistItemsDTO> collection = mongoDb.GetCollection<PlaylistItemsDTO>("playlistItems");
-
-            List<PlaylistItemsDTO> playlistItemsDTO = ConvertListModell(playlistDTOs);
-
-            foreach (PlaylistItemsDTO playlistItem in playlistItemsDTO)
-            {
-
-                var filter = Builders<PlaylistItemsDTO>.Filter.Eq(p => p.id, playlistItem.id);
-                var existingPlaylist = await collection.Find(filter).FirstOrDefaultAsync();
-
-                if (existingPlaylist != null)
-                {
-                    return;
-                }
-
-                await collection.InsertOneAsync(playlistItem);
-
-            }
-        }
 
         public async Task SetPlaylist(Models.Playlist.PlaylistDTO playlistDTO)
         {
@@ -48,7 +23,7 @@ namespace ReastEasySpotify.Database.Mongo.Controllers
             MongoClient client = new(mongoSecret.ConnectionString());
             IMongoDatabase mongoDb = client.GetDatabase(mongoSecret.GetDatabaseName());
                    
-            IMongoCollection<PlaylistItemsDTO> collection = mongoDb.GetCollection<PlaylistItemsDTO>("playlistItems");
+            IMongoCollection<PlaylistItemsDTO> collection = mongoDb.GetCollection<PlaylistItemsDTO>("playlist");
 
             PlaylistItemsDTO playlistItemsDTO = ConvertModell(playlistDTO);
 
@@ -63,17 +38,7 @@ namespace ReastEasySpotify.Database.Mongo.Controllers
             await collection.InsertOneAsync(playlistItemsDTO);                
         }
 
-        private List<PlaylistItemsDTO> ConvertListModell(List<PlaylistDTO> playlistDTOs)
-        {
-            List<PlaylistItemsDTO> playlistDTO = new List<PlaylistItemsDTO>();
-           
-            foreach (PlaylistDTO playlist in playlistDTOs)
-            {
-                playlistDTO.Add(ConvertModell(playlist));
-            }
-            
-            return playlistDTO;
-        }
+
         private PlaylistItemsDTO ConvertModell(PlaylistDTO playlistDTO)
         {
             PlaylistItemsDTO playlistItemsDTO = new PlaylistItemsDTO
