@@ -11,8 +11,6 @@ namespace ReastEasySpotify
         {
             Program program = new Program();
 
-
-
             GetSearch getSearch = new();
 
             Search.SearchDTO searchDTO = await getSearch.GetSearchs("Masse x Gewicht", "playlist");
@@ -23,14 +21,14 @@ namespace ReastEasySpotify
 
             Database.Mongo.Controllers.Playlist MongoPlaylist = new ();
 
-            await MongoPlaylist.SetPlaylist(playlistDTO);
+            await MongoPlaylist.SavePlaylistInMongo(playlistDTO);
 
-            Task<List<PlaylistItemDTO>> playlistItems = program.GetAllTracksInPlaylist(playlistDTO.id);
+            Task<List<PlaylistItemDTO>> playlistItems = program.GetAllTracksFromPlaylist(playlistDTO.id);
 
-            await MongoPlaylist.SetPlaylistItems(playlistItems);
+            Database.Mongo.Controllers.PlaylistItems MongoPlaylistItems = new ();
+            
+            await MongoPlaylistItems.SaveItemsFromPlaylistInMongo(await playlistItems);
 
-
-             
 
 
             //program.WriteSearchDTOToFile(playlistItems.Result, "PlaylistItems.json");
@@ -87,7 +85,7 @@ namespace ReastEasySpotify
             }
         }
 
-        public async Task<List<PlaylistItemDTO>> GetAllTracksInPlaylist(string playlist_id)
+        public async Task<List<PlaylistItemDTO>> GetAllTracksFromPlaylist(string playlist_id)
         {
             int total = 1;
             int offset = 0;

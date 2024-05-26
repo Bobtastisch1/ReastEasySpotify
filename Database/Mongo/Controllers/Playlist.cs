@@ -1,14 +1,5 @@
 ﻿using MongoDB.Driver;
 using ReastEasySpotify.Database.Mongo.Model.DTO;
-using System;
-using static System.Net.Mime.MediaTypeNames;
-using System.Net.NetworkInformation;
-using System.Collections.Generic;
-using ReastEasySpotify.Database.Mongo.Model;
-using static ReastEasySpotify.Models.Playlist;
-using Amazon.Runtime.Internal.Endpoints.StandardLibrary;
-using static ReastEasySpotify.Models.Search;
-using MongoDB.Bson;
 
 namespace ReastEasySpotify.Database.Mongo.Controllers
 {
@@ -16,18 +7,14 @@ namespace ReastEasySpotify.Database.Mongo.Controllers
     {
 
 
-        public async Task SetPlaylist(Models.Playlist.PlaylistDTO playlistDTO)
+        public async Task SavePlaylistInMongo(Models.Playlist.PlaylistDTO playlistDTO)
         {
-            MongoSecret mongoSecret = new();
+            MongoDbHelper<PlaylistDTO> mongoDbHelper = new("playlist");
+            IMongoCollection<PlaylistDTO> collection = mongoDbHelper.GetCollection();
 
-            MongoClient client = new(mongoSecret.ConnectionString());
-            IMongoDatabase mongoDb = client.GetDatabase(mongoSecret.GetDatabaseName());
-                   
-            IMongoCollection<PlaylistItemsDTO> collection = mongoDb.GetCollection<PlaylistItemsDTO>("playlist");
+            PlaylistDTO playlistItemsDTO = ConvertModell(playlistDTO);
 
-            PlaylistItemsDTO playlistItemsDTO = ConvertModell(playlistDTO);
-
-            var filter = Builders<PlaylistItemsDTO>.Filter.Eq(p => p.id, playlistItemsDTO.id);
+            var filter = Builders<PlaylistDTO>.Filter.Eq(p => p.id, playlistItemsDTO.id);
             var existingPlaylist = await collection.Find(filter).FirstOrDefaultAsync();
 
             if (existingPlaylist != null)
@@ -39,9 +26,9 @@ namespace ReastEasySpotify.Database.Mongo.Controllers
         }
 
 
-        private PlaylistItemsDTO ConvertModell(PlaylistDTO playlistDTO)
+        private PlaylistDTO ConvertModell(Models.Playlist.PlaylistDTO playlistDTO)
         {
-            PlaylistItemsDTO playlistItemsDTO = new PlaylistItemsDTO
+            PlaylistDTO playlistItemsDTO = new PlaylistDTO
             {
                 collaborative = playlistDTO.collaborative,
                 description = playlistDTO.description,

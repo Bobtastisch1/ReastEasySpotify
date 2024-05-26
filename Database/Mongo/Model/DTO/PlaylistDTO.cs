@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace ReastEasySpotify.Database.Mongo.Model.DTO
 {
-    public partial class PlaylistItemsDTO
+    public partial class PlaylistDTO
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]

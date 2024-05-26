@@ -1,5 +1,4 @@
-﻿
-namespace ReastEasySpotify.Database.Mongo.Model
+﻿namespace ReastEasySpotify.Database.Mongo.Model
 {
     public partial class ExternalUrls
     {
