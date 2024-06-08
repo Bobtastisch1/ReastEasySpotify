@@ -17,8 +17,7 @@ namespace ReastEasySpotify.Database.Mongo.Controllers
             foreach (PlaylistItemDTO playlistItem in playlistItemsDTO)
             {
 
-
-                var filter = Builders<PlaylistItemDTO>.Filter.Eq(p => p.playlistItemId, playlistItem.playlistItemId);
+                var filter = Builders<PlaylistItemDTO>.Filter.Eq(p => p.href, playlistItem.href);
                 var existingPlaylist = await collection.Find(filter).FirstOrDefaultAsync();
 
                 if (existingPlaylist != null)
@@ -40,7 +39,7 @@ namespace ReastEasySpotify.Database.Mongo.Controllers
             foreach (Models.PlaylistItemDTO playlistItem in playlistItemDTOs)
             {
                 PlaylistItemDTO mongoPlaylistItem = ConvertModell(playlistItem);
-
+               
                 mongoPlaylistItemDTO.Add(mongoPlaylistItem);
             }
 
