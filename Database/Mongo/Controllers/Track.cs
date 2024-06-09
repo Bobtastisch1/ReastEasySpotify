@@ -1,74 +1,50 @@
-﻿using MongoDB.Bson;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using ReastEasySpotify.Database.Mongo.Model;
 using ReastEasySpotify.Database.Mongo.Model.DTO;
 
+
 namespace ReastEasySpotify.Database.Mongo.Controllers
 {
-    public class PlaylistItems
+    public class Track
     {
-        public async Task SaveItemsFromPlaylistInMongo(List<Models.PlaylistItemDTO> playlistItemDTOs)
+        public async Task SaveTrackInMongo(PlaylistItemDTO playlistItem)
         {
-            MongoDbHelper<PlaylistItemDTO> mongoDbHelper = new ("playlistItems");
-            IMongoCollection<PlaylistItemDTO> collection = mongoDbHelper.GetCollection();
+            MongoDbHelper<TrackDTO> mongoDbHelper = new("Tracks");
+            IMongoCollection<TrackDTO> collection = mongoDbHelper.GetCollection();
 
-            List<PlaylistItemDTO> playlistItemsDTO = ConvertListModell(playlistItemDTOs);
+            List<TrackDTO> tracks =  ConvertPlaylistItemToTrack(playlistItem);
 
-            foreach (PlaylistItemDTO playlistItem in playlistItemsDTO)
+            foreach( TrackDTO track in tracks )
             {
+                var filter = Builders<TrackDTO>.Filter.Eq(p => p.track.id, track.track.id);
+                var existingTrack = await collection.Find(filter).FirstOrDefaultAsync();
 
-                var filter = Builders<PlaylistItemDTO>.Filter.Eq(p => p.href, playlistItem.href);
-                var existingPlaylistItem = await collection.Find(filter).FirstOrDefaultAsync();
-
-                Controllers.Track track = new Controllers.Track();
-
-                await track.SaveTrackInMongo(playlistItem);
-
-                if (existingPlaylistItem != null)
+                if (existingTrack != null)
                 {
                     continue;
                 }
 
-                await collection.InsertOneAsync(playlistItem);
-            }
+                await collection.InsertOneAsync(track);
 
-            return;
+            }
 
         }
 
-        private List<PlaylistItemDTO> ConvertListModell(List<Models.PlaylistItemDTO> playlistItemDTOs)
+
+        private List<TrackDTO> ConvertPlaylistItemToTrack(PlaylistItemDTO playlistItem)
         {
-            List<PlaylistItemDTO> mongoPlaylistItemDTO = new List<PlaylistItemDTO>();
-
-            foreach (Models.PlaylistItemDTO playlistItem in playlistItemDTOs)
+            List<TrackDTO> tracks = new List<TrackDTO>();
+            foreach( Model.Items item in playlistItem.items)
             {
-                PlaylistItemDTO mongoPlaylistItem = ConvertModell(playlistItem);
-               
-                mongoPlaylistItemDTO.Add(mongoPlaylistItem);
-            }
 
-            return mongoPlaylistItemDTO;
-        }
-
-        private PlaylistItemDTO ConvertModell(Models.PlaylistItemDTO playlistItems)
-        {
-
-            PlaylistItemDTO playlistItemsDTO = new PlaylistItemDTO()
-            {
-                href = playlistItems.href,
-                limit = playlistItems.limit,
-                next = playlistItems.next,
-                offset = playlistItems.offset,
-                previous = playlistItems.previous,
-                total = playlistItems.total,
-                items = playlistItems.items.Select(item => new Items
+                TrackDTO track = new TrackDTO()
                 {
                     added_at = item.added_at,
                     added_by = new AddedBy
                     {
-                        external_urls = new ExternalUrls 
-                        { 
-                            spotify = item.added_by.external_urls.spotify 
+                        external_urls = new ExternalUrls
+                        {
+                            spotify = item.added_by.external_urls.spotify
                         },
                         href = item.added_by.href,
                         id = item.added_by.id,
@@ -84,9 +60,9 @@ namespace ReastEasySpotify.Database.Mongo.Controllers
                             album_type = item.track.album.album_type,
                             artists = item.track.album.artists.Select(artist => new Artists
                             {
-                                external_Urls = new ExternalUrls 
-                                { 
-                                    spotify = artist.external_Urls.spotify 
+                                external_Urls = new ExternalUrls
+                                {
+                                    spotify = artist.external_Urls.spotify
                                 },
                                 href = artist.href,
                                 id = artist.id,
@@ -95,9 +71,9 @@ namespace ReastEasySpotify.Database.Mongo.Controllers
                                 uri = artist.uri
                             }).ToList(),
                             available_markets = item.track.album.available_markets,
-                            external_Urls = new ExternalUrls 
-                            { 
-                                spotify = item.track.album.external_Urls.spotify 
+                            external_Urls = new ExternalUrls
+                            {
+                                spotify = item.track.album.external_Urls.spotify
                             },
                             href = item.track.album.href,
                             id = item.track.album.id,
@@ -116,9 +92,9 @@ namespace ReastEasySpotify.Database.Mongo.Controllers
                         },
                         artists = item.track.artists.Select(artist => new Artists
                         {
-                            external_Urls = new ExternalUrls 
-                            { 
-                                spotify = artist.external_Urls.spotify 
+                            external_Urls = new ExternalUrls
+                            {
+                                spotify = artist.external_Urls.spotify
                             },
                             href = artist.href,
                             id = artist.id,
@@ -130,9 +106,13 @@ namespace ReastEasySpotify.Database.Mongo.Controllers
                         disc_number = item.track.disc_number,
                         episode = item.track.episode,
                         Explicit = item.track.Explicit,
-                        external_Urls = new ExternalUrls 
-                        { 
-                            spotify = item.track.external_Urls.spotify 
+                        external_Ids = new ExternalIds
+                        {
+                            isrc = item.track.external_Ids.isrc,
+                        },
+                        external_Urls = new ExternalUrls
+                        {
+                            spotify = item.track.external_Urls.spotify
                         },
                         href = item.track.href,
                         id = item.track.id,
@@ -145,16 +125,17 @@ namespace ReastEasySpotify.Database.Mongo.Controllers
                         type = item.track.type,
                         uri = item.track.uri
                     },
-                    video_thumbnail = new VideoThumbnail 
-                    { 
-                        url = item.video_thumbnail.url 
+                    video_thumbnail = new VideoThumbnail
+                    {
+                        url = item.video_thumbnail.url
                     }
-                }).ToList()
-            };
+                };
 
 
-            return playlistItemsDTO;
+                tracks.Add(track);
+            }
+
+            return tracks;
         }
-
     }
 }

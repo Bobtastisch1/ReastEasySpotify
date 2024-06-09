@@ -137,10 +137,6 @@ namespace ReastEasySpotify.Database.Mongo.Controllers
                             disc_number = item.track.disc_number,
                             episode = item.track.episode,
                             Explicit = item.track.Explicit,
-                            external_Ids = new Model.ExternalIds
-                            {
-                                isrc = item.track.external_Ids.isrc
-                            },
                             external_Urls = new Model.ExternalUrls
                             {
                                 spotify = item.track.external_Urls.spotify
