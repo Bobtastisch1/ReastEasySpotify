@@ -19,7 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Info\Youtube\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 
