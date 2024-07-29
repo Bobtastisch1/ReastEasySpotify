@@ -9,6 +9,7 @@ Migrations
 DBSecrets.cs
 MongoSecret.cs
 SQL
+YoutubeSecret.cs
 
 # User-specific files
 *.rsuser

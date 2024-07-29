@@ -9,16 +9,11 @@ namespace ReastEasySpotify
 {
     internal class Url
     {
-        private String baseUrl = "https://api.spotify.com/v1/";
+        private string baseSpotifyUrl = "https://api.spotify.com/v1/";
+        private string baseYoutubeUrl = "https://www.googleapis.com/youtube/v3";
 
-        public string GetUrl(string param)
-        {
-            string url = baseUrl + param;
+        public string GetBaseSpotifyUrl() {  return baseSpotifyUrl; }
 
-            return url;
-        }
-
-        public string GetBaseUrl() {  return baseUrl; }
-
+        public string GetBaseYoutubeUrl() { return baseYoutubeUrl; }
     }
 }

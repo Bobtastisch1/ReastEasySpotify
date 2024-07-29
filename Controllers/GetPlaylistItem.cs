@@ -13,7 +13,7 @@ namespace ReastEasySpotify.Controllers
         public async Task<PlaylistItemDTO> GetPlaylistsItems(string playlist_id, int offset)
         {
             Url baseUrl = new();
-            string url = baseUrl.GetBaseUrl();
+            string url = baseUrl.GetBaseSpotifyUrl();
 
             ISpotifyAPI client = RestClient.For<ISpotifyAPI>(url);
 

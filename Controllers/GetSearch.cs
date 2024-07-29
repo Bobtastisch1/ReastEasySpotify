@@ -8,7 +8,7 @@ namespace ReastEasySpotify.Controllers
         public async Task<Search.SearchDTO> GetSearchs(string q, string type)
         {
             Url baseUrl = new();
-            string url = baseUrl.GetBaseUrl();
+            string url = baseUrl.GetBaseSpotifyUrl();
 
             ISpotifyAPI client = RestClient.For<ISpotifyAPI>(url);
 

@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using ReastEasySpotify.Controllers;
+﻿using ReastEasySpotify.Controllers;
 using ReastEasySpotify.Models;
 
 
@@ -11,25 +10,35 @@ namespace ReastEasySpotify
         {
             Program program = new Program();
 
-            GetSearch getSearch = new();
+            Youtube.Controllers.GetSearch YouSearch = new();
 
-            Search.SearchDTO searchDTO = await getSearch.GetSearchs("Masse x Gewicht", "playlist");
+            Youtube.Models.Search.SearchDTO search = await YouSearch.GetSearches("snippet", "Bobs Music to mutch to handle for you", "");
 
-            GetPlaylist getPlaylist = new();
+            Youtube.Controllers.GetPlaylist YouPlaylist = new();
 
-            Playlist.PlaylistDTO playlistDTO = await getPlaylist.GetPlaylists(searchDTO.Playlists.items.First().id);
+            await YouPlaylist.GetPlaylists("snippet", search.items.First().snippet.channelId, "OnlyBobs");
 
-            Database.Mongo.Controllers.Playlist MongoPlaylist = new ();
 
-            await MongoPlaylist.SavePlaylistInMongo(playlistDTO);
 
-            Task<List<PlaylistItemDTO>> playlistItems = program.GetAllTracksFromPlaylist(playlistDTO.id);
+            //GetSearch getSearch = new();
 
-            Database.Mongo.Controllers.PlaylistItems MongoPlaylistItems = new ();
-            
-            await MongoPlaylistItems.SaveItemsFromPlaylistInMongo(await playlistItems);
+            //Search.SearchDTO searchDTO = await getSearch.GetSearchs("Masse x Gewicht", "playlist");
 
-           
+            //GetPlaylist getPlaylist = new();
+
+            //Playlist.PlaylistDTO playlistDTO = await getPlaylist.GetPlaylists(searchDTO.Playlists.items.First().id);
+
+            //Database.Mongo.Controllers.Playlist MongoPlaylist = new ();
+
+            //await MongoPlaylist.SavePlaylistInMongo(playlistDTO);
+
+            //Task<List<PlaylistItemDTO>> playlistItems = program.GetAllTracksFromPlaylist(playlistDTO.id);
+
+            //Database.Mongo.Controllers.PlaylistItems MongoPlaylistItems = new ();
+
+            //await MongoPlaylistItems.SaveItemsFromPlaylistInMongo(await playlistItems);
+
+
 
         }
 
